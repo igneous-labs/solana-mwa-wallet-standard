@@ -1,0 +1,31 @@
+{
+  "name": "solana-mwa-standard-wallet",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.js"
+    }
+  },
+  "types": "types/index.d.ts",
+  "type": "module",
+  "license": "Apache-2.0",
+  "files": [
+    "src/",
+    "types/index.d.ts"
+  ],
+  "scripts": {
+    "prepack": "pnpm typegen",
+    "typegen": "pnpm tsc src/index.js --skipLibCheck --declaration --allowJs --emitDeclarationOnly --outDir types"
+  },
+  "dependencies": {
+    "@solana-mobile/mobile-wallet-adapter-protocol": "^2",
+    "@solana/wallet-standard-chains": "^1"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@solana/wallet-standard-features": "^1",
+    "@wallet-standard/base": "^1"
+  }
+}
