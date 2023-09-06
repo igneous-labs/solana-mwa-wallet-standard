@@ -1,12 +1,19 @@
-solana-mwa-button {
-  display: block; /* custom element default to display: inline */
+wallet-standard-list {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-solana-mwa-button > button {
+wallet-standard-list > button {
   display: flex;
   align-items: center;
   height: 3rem;
   font-size: 1rem;
+}
+
+wallet-standard-list > button > img {
+  height: 75%;
+  margin-right: 1rem;
 }
 
 body {

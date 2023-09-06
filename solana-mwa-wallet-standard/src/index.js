@@ -181,6 +181,9 @@ export class SolanaMwaWalletStandard {
     const inputIndices = this.#inputsIndicesByChain(inputs);
     const res = [];
     for (const [chainUncasted, indices] of Object.entries(inputIndices)) {
+      if (indices.length === 0) {
+        continue;
+      }
       /** @type {NonLocalnetChain} */ // @ts-ignore
       const chain = chainUncasted;
       const cluster = chainToCluster(chain);
@@ -206,6 +209,9 @@ export class SolanaMwaWalletStandard {
 
   /** @type {import("@solana/wallet-standard-features").SolanaSignMessageMethod} */
   async #signMessage(...inputs) {
+    if (inputs.length === 0) {
+      return [];
+    }
     // TODO: check if cluster matters
     const cluster = chainToCluster(this.defaultChain);
     const formatted = signMessagesToMwaFormat(inputs);
@@ -233,6 +239,9 @@ export class SolanaMwaWalletStandard {
     const inputIndices = this.#inputsIndicesByChain(inputs);
     const res = [];
     for (const [chainUncasted, indices] of Object.entries(inputIndices)) {
+      if (indices.length === 0) {
+        continue;
+      }
       /** @type {NonLocalnetChain} */ // @ts-ignore
       const chain = chainUncasted;
       const cluster = chainToCluster(chain);
@@ -312,19 +321,18 @@ export class SolanaMwaWalletStandard {
     };
     if (!noChange) {
       this.#emit("change", { accounts: this.accounts });
-    }
-
-    await transact(async (wallet) => {
-      // not sure if mobile wallets can handle concurrent deauth attempts,
-      // so do it sequentially
-      for (const authToken of authTokens) {
-        if (authToken === null) {
-          continue;
+      await transact(async (wallet) => {
+        // not sure if mobile wallets can handle concurrent deauth attempts,
+        // so do it sequentially
+        for (const authToken of authTokens) {
+          if (authToken === null) {
+            continue;
+          }
+          // eslint-disable-next-line no-await-in-loop
+          await wallet.deauthorize({ auth_token: authToken });
         }
-        // eslint-disable-next-line no-await-in-loop
-        await wallet.deauthorize({ auth_token: authToken });
-      }
-    });
+      });
+    }
   }
 
   /** @type {import("@wallet-standard/features").StandardEventsOnMethod} */
@@ -344,7 +352,7 @@ export class SolanaMwaWalletStandard {
    */
   async #transact(cluster, callback) {
     const authToken = this.#authTokens[cluster];
-    if (!authToken) {
+    if (authToken === null) {
       throw new Error("not yet authorized");
     }
     return transact(async (wallet) => {

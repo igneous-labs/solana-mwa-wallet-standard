@@ -11,8 +11,8 @@ import { registerSolanaMwaWalletStandard } from "solana-mwa-wallet-standard";
 
 registerSolanaMwaWalletStandard({
   name: "my dapp",
-  uri: "your-dapp.com",
-  icon: "favicon.ico",
+  uri: "https://your-dapp.com",
+  icon: "./favicon.ico",
   chains: ["solana:mainnet", "solana:devnet"], // defaults to ["solana:mainnet"] if not specified. Mobile wallets may require a separate auth flow for each chain.
 });
 ```
