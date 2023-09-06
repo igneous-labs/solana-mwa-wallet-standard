@@ -8,7 +8,7 @@ import { SOLANA_CHAINS } from "@solana/wallet-standard-chains";
 /**
  * @implements {WalletWithSolanaFeatures}
  */
-export class SolanaMwaStandardWallet {
+export class SolanaMwaWalletStandard {
   /** @returns {"1.0.0"} */
   get version() {
     return "1.0.0";
@@ -37,7 +37,6 @@ export class SolanaMwaStandardWallet {
 
   /** @returns {WalletWithSolanaFeatures["features"]} */
   get features() {
-    // TODO
     return {
       "solana:signAndSendTransaction": {
         version: "1.0.0",
@@ -70,11 +69,15 @@ export class SolanaMwaStandardWallet {
   /** @type {import("@solana-mobile/mobile-wallet-adapter-protocol").AppIdentity} */
   #appIdentity;
 
+  /** @type {?import("@solana-mobile/mobile-wallet-adapter-protocol").AuthToken} */
+  #authToken;
+
   /**
    * @param {import("@solana-mobile/mobile-wallet-adapter-protocol").AppIdentity} appIdentity
    */
   constructor(appIdentity) {
     this.#appIdentity = appIdentity;
+    this.#authToken = null;
     // TODO
   }
 
@@ -100,9 +103,10 @@ export class SolanaMwaStandardWallet {
 /**
  * register the solana mobile wallet adapter as a standard wallet
  */
-export function registerSolanaMwaStandardWallet() {
+export function registerSolanaMwaWalletStandard() {
   /** @type {import("@wallet-standard/base").WalletEventsWindow} */
   const walletEventsWindow = window;
+  // TODO
   walletEventsWindow.addEventListener(
     "wallet-standard:app-ready",
     ({ detail: { register } }) => {}

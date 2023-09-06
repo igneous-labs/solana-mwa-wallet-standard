@@ -1,5 +1,5 @@
 {
-  "name": "solana-mwa-standard-wallet",
+  "name": "solana-mwa-wallet-standard",
   "version": "0.1.0",
   "main": "src/index.js",
   "exports": {

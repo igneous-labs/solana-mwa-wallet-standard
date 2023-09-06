@@ -47,9 +47,9 @@ importers:
       base58-js:
         specifier: ^2.0.0
         version: 2.0.0
-      solana-mwa-standard-wallet:
+      solana-mwa-wallet-standard:
         specifier: workspace:^
-        version: link:../solana-mwa-standard-wallet
+        version: link:../solana-mwa-wallet-standard
       wallet-standard-list:
         specifier: ^0.1.2
         version: 0.1.2
@@ -61,7 +61,7 @@ importers:
         specifier: ^4.2.1
         version: 4.2.1
 
-  solana-mwa-standard-wallet:
+  solana-mwa-wallet-standard:
     dependencies:
       '@solana-mobile/mobile-wallet-adapter-protocol':
         specifier: ^2
@@ -2172,7 +2172,7 @@ packages:
     resolution: {integrity: sha512-cZKUm2w67MQOAzbfdZCGAbePWuqSwpvpbWA2K2D0UcHX30I8ry8YEeHlqwqULIOTeY8lRCHu8WMxZwC9iMEqHQ==}
     engines: {node: '>=16'}
     dependencies:
-      '@wallet-standard/base': 1.0.0
+      '@wallet-standard/base': 1.0.1
       '@wallet-standard/features': 1.0.3
     dev: true
 

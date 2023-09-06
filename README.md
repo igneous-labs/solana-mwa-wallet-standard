@@ -1,3 +1,3 @@
-# solana-mwa-standard-wallet
+# solana-mwa-wallet-standard
 
-See [package README](./solana-mwa-standard-wallet/README.md) for more details
+See [package README](./solana-mwa-wallet-standard/README.md) for more details
