@@ -27,6 +27,11 @@ const SIGN_MSG_BUTTON = document.getElementById("sign-msg-button");
 /** @type {HTMLButtonElement} */ // @ts-ignore
 const DISCONNECT_BUTTON = document.getElementById("disconnect-button");
 
+/** @type {HTMLSpanElement} */ // @ts-ignore
+const EVENTS_HEARD_SPAN = document.getElementById("events-heard");
+
+let offWalletChange = null;
+
 const base64ToUint8 = (str) =>
   Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
 
@@ -81,6 +86,13 @@ async function signMsg() {
   );
 }
 
+// TODO: this will not fire right now since:
+// - on() is called after change is emitted during connect()
+// - off() is called before change is emitted during disconnect()
+function onWalletChange(properties) {
+  EVENTS_HEARD_SPAN.innerText = JSON.stringify(properties);
+}
+
 registerSolanaMwaWalletStandard({
   name: "solana-mwa-wallet-standard test dapp",
 });
@@ -100,6 +112,11 @@ window.addEventListener(
     ]) {
       btnToEnable.removeAttribute("disabled");
     }
+    offWalletChange = null;
+    offWalletChange = wallet.features["standard:events"].on(
+      "change",
+      onWalletChange
+    );
   }
 );
 
@@ -114,6 +131,9 @@ window.addEventListener(WALLET_DISCONNECTED_EVENT_TYPE, () => {
   ]) {
     btnToDisable.setAttribute("disabled", "1");
   }
+  offWalletChange();
+  offWalletChange = null;
+  EVENTS_HEARD_SPAN.innerText = "";
 });
 
 DISCONNECT_BUTTON.onclick = () => {
