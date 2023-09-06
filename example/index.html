@@ -1,70 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script type="module">
-      import { binary_to_base58 } from "base58-js";
-      import {
-        defineCustomElement,
-        WALLET_CONNECTED_EVENT_TYPE,
-        WALLET_DISCONNECTED_EVENT_TYPE,
-      } from "wallet-standard-list";
-      import { registerSolanaMwaWalletStandard } from "solana-mwa-wallet-standard";
-
-      registerSolanaMwaWalletStandard({
-        name: "solana-mwa-wallet-standard test dapp",
-      });
-      defineCustomElement();
-
-      window.addEventListener(
-        WALLET_CONNECTED_EVENT_TYPE,
-        ({ detail: wallet }) => {
-          document.getElementById("connected-wallet").innerText = wallet.name;
-          document.getElementById("first-account").innerText =
-            wallet.accounts[0].address;
-          document.getElementById("stake-button").removeAttribute("disabled");
-          document
-            .getElementById("disconnect-button")
-            .removeAttribute("disabled");
-        }
-      );
-      window.addEventListener(WALLET_DISCONNECTED_EVENT_TYPE, () => {
-        document.getElementById("connected-wallet").innerText = "None";
-        document.getElementById("first-account").innerText = "None";
-        document.getElementById("stake-button").setAttribute("disabled", "1");
-        document
-          .getElementById("disconnect-button")
-          .setAttribute("disabled", "1");
-      });
-
-      document.getElementById("disconnect-button").onclick = () => {
-        document.querySelector("wallet-standard-list").disconnect();
-      };
-
-      const base64ToUint8 = (str) =>
-        Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
-
-      async function stake() {
-        const wallet = document.querySelector(
-          "wallet-standard-list"
-        ).connectedWallet;
-        const account = wallet.accounts[0];
-        const user = account.address;
-        const url = `https://stakedex-api.fly.dev/v1/swap?inputMint=So11111111111111111111111111111111111111112&outputMint=LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X&inAmount=1000000000&user=${user}`;
-        const resp = await fetch(url);
-        const { tx } = await resp.json();
-        const buf = base64ToUint8(tx);
-        const [{ signature }] = await wallet.features[
-          "solana:signAndSendTransaction"
-        ].signAndSendTransaction({
-          chain: "solana:mainnet",
-          account,
-          transaction: buf,
-        });
-        alert(`Signature: ${binary_to_base58(signature)}`);
-      }
-
-      document.getElementById("stake-button").onclick = stake;
-    </script>
+    <script type="module" src="/index.js"></script>
     <link href="index.css" rel="stylesheet" />
     <meta
       name="viewport"
@@ -84,6 +21,12 @@
       <button type="button" id="disconnect-button" disabled>Disconnect</button>
       <button type="button" id="stake-button" disabled>
         Stake 1 SOL to Laine
+      </button>
+      <button type="button" id="sign-stake-button" disabled>
+        Sign TX to stake 1 SOL to Laine
+      </button>
+      <button type="button" id="sign-msg-button" disabled>
+        Sign message "test message"
       </button>
     </footer>
   </body>

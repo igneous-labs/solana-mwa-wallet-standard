@@ -468,6 +468,8 @@ function chainToCluster(chain) {
 function areAllChainsSupported(inputs) {
   for (const { chain } of inputs) {
     if (
+      chain !== null &&
+      chain !== undefined &&
       chain !== SOLANA_DEVNET_CHAIN &&
       chain !== SOLANA_MAINNET_CHAIN &&
       chain !== SOLANA_TESTNET_CHAIN
