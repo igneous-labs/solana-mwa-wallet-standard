@@ -1,79 +1,71 @@
 /**
- * window.customElements.define() the web component so that it can be used
- *
- * @param {string | null | undefined} [htmlTag] defaults to `solana-mwa-button` if not provided
+ * register the solana mobile wallet adapter as a standard wallet
+ * @param {SolanaMwaWalletStandardCtorArgs} args
  */
-export function defineCustomElement(htmlTag?: string | null | undefined): void;
-/** @typedef {typeof WALLET_AUTHORIZED_EVENT_TYPE} WalletAuthorizedEventType */
-/** @typedef {typeof WALLET_DISCONNECTED_EVENT_TYPE} WalletDisconnectedEventType */
-/** @typedef {typeof ERROR_EVENT_TYPE} ErrorEventType */
-/** @typedef {CustomEvent<import("@solana-mobile/mobile-wallet-adapter-protocol").Account[]>} WalletAuthorizedEvent */
-/** @typedef {CustomEvent<undefined>} WalletDisconnectedEvent */
-/** @typedef {CustomEvent<Error>} ErrorEvent */
+export function registerSolanaMwaWalletStandard(args: SolanaMwaWalletStandardCtorArgs): void;
+/** @typedef {import("@solana/wallet-standard-features").WalletWithSolanaFeatures} WalletWithSolanaFeatures */
+/** @typedef {Exclude<import("@solana/wallet-standard-chains").SolanaChain, "solana:localnet">} NonLocalnetChain */
+/**
+ * @typedef MaybeNonLocalnetChainsProp
+ * @property {NonLocalnetChain[] | null | undefined} [chains]
+ */
+/** @typedef {import("@solana-mobile/mobile-wallet-adapter-protocol").AppIdentity & MaybeNonLocalnetChainsProp} SolanaMwaWalletStandardCtorArgs */
+/**
+ * @typedef MaybeChainProp
+ * @property {import("@wallet-standard/base").IdentifierString | null | undefined} [chain]
+ */
 /**
  * @template TReturn
  * @typedef {(wallet: import("@solana-mobile/mobile-wallet-adapter-protocol").MobileWallet) => TReturn} TransactCallback<TReturn>
  */
+export class ChainNotSupportedError extends Error {
+    constructor();
+}
+export class NoChainsSetError extends Error {
+    constructor();
+}
 /**
- * @template TReturn
- * @typedef {{ val: TReturn } | { err: Error }} TransactReturn<TReturn>
+ * @implements {WalletWithSolanaFeatures}
  */
-export const WALLET_AUTHORIZED_EVENT_TYPE: "solana-mwa-button:wallet-authorized";
-export const WALLET_DISCONNECTED_EVENT_TYPE: "solana-mwa-button:wallet-disconnected";
-export const ERROR_EVENT_TYPE: "solana-mwa-button:error";
-export const CLUSTER_ATTR_NAME: "cluster";
-export const NAME_ATTR_NAME: "name";
-export const URI_ATTR_NAME: "uri";
-export const ICON_ATTR_NAME: "icon";
-export const SOLANA_MWA_BUTTON_ELEM_TAG: "solana-mwa-button";
-export const ICON_DATA: "data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjI4IiB3aWR0aD0iMjgiIHZpZXdCb3g9Ii0zIDAgMjggMjgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0RDQjhGRiI+PHBhdGggZD0iTTE3LjQgMTcuNEgxNXYyLjRoMi40di0yLjRabTEuMi05LjZoLTIuNHYyLjRoMi40VjcuOFoiLz48cGF0aCBkPSJNMjEuNiAzVjBoLTIuNHYzaC0zLjZWMGgtMi40djNoLTIuNHY2LjZINC41YTIuMSAyLjEgMCAxIDEgMC00LjJoMi43VjNINC41QTQuNSA0LjUgMCAwIDAgMCA3LjVWMjRoMjEuNnYtNi42aC0yLjR2NC4ySDIuNFYxMS41Yy41LjMgMS4yLjQgMS44LjVoNy41QTYuNiA2LjYgMCAwIDAgMjQgOVYzaC0yLjRabTAgNS43YTQuMiA0LjIgMCAxIDEtOC40IDBWNS40aDguNHYzLjNaIi8+PC9nPjwvc3ZnPg==";
-export class SolanaMwaButton extends HTMLElement {
-    /** @returns {string[]} */
-    static get observedAttributes(): string[];
-    /** @returns {boolean} */
-    get isAuthorized(): boolean;
+export class SolanaMwaWalletStandard implements WalletWithSolanaFeatures {
+    /**
+     * @param {SolanaMwaWalletStandardCtorArgs} args
+     */
+    constructor({ chains, ...appIdentity }: SolanaMwaWalletStandardCtorArgs);
+    /** @returns {"1.0.0"} */
+    get version(): "1.0.0";
+    /** @returns {WalletWithSolanaFeatures["icon"]} */
+    get icon(): `data:image/svg+xml;base64,${string}` | `data:image/webp;base64,${string}` | `data:image/png;base64,${string}` | `data:image/gif;base64,${string}`;
+    /** @returns {WalletWithSolanaFeatures["name"]} */
+    get name(): string;
+    /** @returns {WalletWithSolanaFeatures["chains"]} */
+    get chains(): import(".pnpm/@wallet-standard+base@1.0.1/node_modules/@wallet-standard/base").IdentifierArray;
+    /** @returns {WalletWithSolanaFeatures["accounts"]} */
+    get accounts(): readonly import(".pnpm/@wallet-standard+base@1.0.1/node_modules/@wallet-standard/base").WalletAccount[];
+    /** @returns {WalletWithSolanaFeatures["features"] & import("@wallet-standard/features").StandardConnectFeature & import("@wallet-standard/features").StandardDisconnectFeature & import("@wallet-standard/features").StandardEventsFeature} */
+    get features(): import("@solana/wallet-standard-features").SolanaFeatures & import("@wallet-standard/features").StandardConnectFeature & import("@wallet-standard/features").StandardDisconnectFeature & import("@wallet-standard/features").StandardEventsFeature;
+    /** @returns {import("@solana/wallet-standard-features").SolanaSignAndSendTransactionFeature["solana:signAndSendTransaction"]["supportedTransactionVersions"]} */
+    get supportedTransactionVersions(): readonly import("@solana/wallet-standard-features").SolanaTransactionVersion[];
     /** @returns {import("@solana-mobile/mobile-wallet-adapter-protocol").AppIdentity} */
     get appIdentity(): Readonly<{
         uri?: string;
         icon?: string;
         name?: string;
     }>;
-    /** @returns {import("@solana-mobile/mobile-wallet-adapter-protocol").Cluster} */
-    get cluster(): import("@solana-mobile/mobile-wallet-adapter-protocol").Cluster;
-    /** @returns {readonly import("@solana-mobile/mobile-wallet-adapter-protocol").Account[]} */
-    get accounts(): readonly Readonly<{
-        address: string;
-        label?: string;
-    }>[];
-    /**
-     *
-     * @param {string} name
-     */
-    attributeChangedCallback(name: string): void;
-    /**
-     * @template TReturn
-     * @param {TransactCallback<TReturn>} callback
-     * @returns {Promise<TransactReturn<TReturn>>}
-     */
-    transact<TReturn>(callback: TransactCallback<TReturn>): Promise<TransactReturn<TReturn>>;
-    disconnect(): void;
+    /** @returns {NonLocalnetChain} */
+    get defaultChain(): NonLocalnetChain;
     #private;
 }
-export type WalletAuthorizedEventType = typeof WALLET_AUTHORIZED_EVENT_TYPE;
-export type WalletDisconnectedEventType = typeof WALLET_DISCONNECTED_EVENT_TYPE;
-export type ErrorEventType = typeof ERROR_EVENT_TYPE;
-export type WalletAuthorizedEvent = CustomEvent<import("@solana-mobile/mobile-wallet-adapter-protocol").Account[]>;
-export type WalletDisconnectedEvent = CustomEvent<undefined>;
-export type ErrorEvent = CustomEvent<Error>;
+export type WalletWithSolanaFeatures = import("@solana/wallet-standard-features").WalletWithSolanaFeatures;
+export type NonLocalnetChain = Exclude<import("@solana/wallet-standard-chains").SolanaChain, "solana:localnet">;
+export type MaybeNonLocalnetChainsProp = {
+    chains?: NonLocalnetChain[] | null | undefined;
+};
+export type SolanaMwaWalletStandardCtorArgs = import("@solana-mobile/mobile-wallet-adapter-protocol").AppIdentity & MaybeNonLocalnetChainsProp;
+export type MaybeChainProp = {
+    chain?: import("@wallet-standard/base").IdentifierString | null | undefined;
+};
 /**
  * <TReturn>
  */
 export type TransactCallback<TReturn> = (wallet: import("@solana-mobile/mobile-wallet-adapter-protocol").MobileWallet) => TReturn;
-/**
- * <TReturn>
- */
-export type TransactReturn<TReturn> = {
-    val: TReturn;
-} | {
-    err: Error;
-};

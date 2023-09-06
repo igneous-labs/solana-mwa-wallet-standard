@@ -66,16 +66,22 @@ importers:
       '@solana-mobile/mobile-wallet-adapter-protocol':
         specifier: ^2
         version: 2.0.0(react-native@0.72.4)
+      base58-js:
+        specifier: ^2
+        version: 2.0.0
+    devDependencies:
       '@solana/wallet-standard-chains':
         specifier: ^1
         version: 1.0.0
-    devDependencies:
       '@solana/wallet-standard-features':
         specifier: ^1
         version: 1.0.0
       '@wallet-standard/base':
         specifier: ^1
         version: 1.0.0
+      '@wallet-standard/features':
+        specifier: ^1
+        version: 1.0.3
       typescript:
         specifier: ^5
         version: 5.0.2
@@ -2166,7 +2172,7 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@wallet-standard/base': 1.0.1
-    dev: false
+    dev: true
 
   /@solana/wallet-standard-features@1.0.0:
     resolution: {integrity: sha512-cZKUm2w67MQOAzbfdZCGAbePWuqSwpvpbWA2K2D0UcHX30I8ry8YEeHlqwqULIOTeY8lRCHu8WMxZwC9iMEqHQ==}
