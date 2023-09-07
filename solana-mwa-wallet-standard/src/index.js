@@ -32,8 +32,11 @@ import { binary_to_base58 as binaryToBase58 } from "base58-js";
  */
 
 export class ChainNotSupportedError extends Error {
-  constructor() {
-    super("chain not supported");
+  /**
+   * @param {string} [chain]
+   */
+  constructor(chain) {
+    super(`chain ${chain ?? "<unknown>"} not supported`);
     // Set the prototype explicitly. https://stackoverflow.com/a/41429145/2247097
     Object.setPrototypeOf(this, ChainNotSupportedError.prototype);
   }
@@ -154,9 +157,13 @@ export class SolanaMwaWalletStandard {
 
   /**
    * @param {SolanaMwaWalletStandardCtorArgs} args
+   * @throws {NoChainsSetError} if args.chains === empty array
    */
   constructor({ chains, ...appIdentity }) {
     this.#chains = chains ?? ["solana:mainnet"];
+    if (this.#chains.length === 0) {
+      throw new NoChainsSetError();
+    }
     this.#appIdentity = appIdentity;
     this.#authTokens = {
       "mainnet-beta": null,
@@ -274,7 +281,9 @@ export class SolanaMwaWalletStandard {
     // TODO: use silent param by saving authToken to localStorage
     const silent = input?.silent ?? false;
     if (silent) {
-      throw new Error("silent connect not yet implemented");
+      console.warn(
+        "SolanaMwaWalletStandard silent connect not yet implemented"
+      );
     }
     let hasChanged = false;
     // not sure if mobile wallets can handle concurrent auth attempts,
@@ -345,6 +354,7 @@ export class SolanaMwaWalletStandard {
   }
 
   /**
+   * transact(), but with reauthorize handled
    * @template TReturn
    * @param {import("@solana-mobile/mobile-wallet-adapter-protocol").Cluster} cluster
    * @param {TransactCallback<TReturn>} callback
@@ -426,7 +436,7 @@ export class SolanaMwaWalletStandard {
 }
 
 /**
- * @param {string} asciiStr base64 encoded string
+ * @param {string} asciiStr base64 encoded ascii string
  * @returns {Uint8Array}
  */
 function base64ToUint8Ascii(asciiStr) {
@@ -456,7 +466,7 @@ function chainToCluster(chain) {
     case "solana:testnet":
       return "testnet";
     default:
-      throw new Error(`unknown solana chain ${chain}`);
+      throw new ChainNotSupportedError(chain);
   }
 }
 

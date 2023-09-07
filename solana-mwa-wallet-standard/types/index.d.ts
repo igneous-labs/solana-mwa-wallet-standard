@@ -19,7 +19,6 @@ export function registerSolanaMwaWalletStandard(args: SolanaMwaWalletStandardCto
  * @typedef {(wallet: import("@solana-mobile/mobile-wallet-adapter-protocol").MobileWallet) => TReturn} TransactCallback<TReturn>
  */
 export class ChainNotSupportedError extends Error {
-    constructor();
 }
 export class NoChainsSetError extends Error {
     constructor();
@@ -30,6 +29,7 @@ export class NoChainsSetError extends Error {
 export class SolanaMwaWalletStandard implements WalletWithSolanaFeatures {
     /**
      * @param {SolanaMwaWalletStandardCtorArgs} args
+     * @throws {NoChainsSetError} if args.chains === empty array
      */
     constructor({ chains, ...appIdentity }: SolanaMwaWalletStandardCtorArgs);
     /** @returns {"1.0.0"} */
