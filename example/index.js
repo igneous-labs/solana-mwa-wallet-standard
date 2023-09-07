@@ -32,8 +32,13 @@ const EVENTS_HEARD_SPAN = document.getElementById("events-heard");
 
 let offWalletChange = null;
 
-const base64ToUint8 = (str) =>
-  Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
+function base64ToUint8Ascii(asciiStr) {
+  return Uint8Array.from(atob(asciiStr), (c) => c.charCodeAt(0));
+}
+
+function uint8ToBase64Ascii(asciiUint8Array) {
+  return btoa(String.fromCharCode(...asciiUint8Array));
+}
 
 async function stake() {
   const wallet = WALLET_STANDARD_LIST.connectedWallet;
@@ -42,7 +47,7 @@ async function stake() {
   const url = `https://stakedex-api.fly.dev/v1/swap?inputMint=So11111111111111111111111111111111111111112&outputMint=LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X&inAmount=1000000000&user=${user}`;
   const resp = await fetch(url);
   const { tx } = await resp.json();
-  const buf = base64ToUint8(tx);
+  const buf = base64ToUint8Ascii(tx);
   const [{ signature }] = await wallet.features[
     "solana:signAndSendTransaction"
   ].signAndSendTransaction({
@@ -60,14 +65,16 @@ async function signStakeTx() {
   const url = `https://stakedex-api.fly.dev/v1/swap?inputMint=So11111111111111111111111111111111111111112&outputMint=LAinEtNLgpmCP9Rvsf5Hn8W6EhNiKLZQti1xfWMLy6X&inAmount=1000000000&user=${user}`;
   const resp = await fetch(url);
   const { tx } = await resp.json();
-  const buf = base64ToUint8(tx);
+  const buf = base64ToUint8Ascii(tx);
   const [{ signedTransaction }] = await wallet.features[
     "solana:signTransaction"
   ].signTransaction({
     account,
     transaction: buf,
   });
-  alert(`Signed Tx: ${binaryToBase58(signedTransaction)}`);
+  const signedTxb64 = uint8ToBase64Ascii(signedTransaction);
+  alert(`Signed Tx: ${signedTxb64}`);
+  // EVENTS_HEARD_SPAN.innerText = signedTxb64;
 }
 
 async function signMsg() {

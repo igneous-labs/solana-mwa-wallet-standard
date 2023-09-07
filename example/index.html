@@ -28,7 +28,13 @@
       <button type="button" id="sign-msg-button" disabled>
         Sign message "test message"
       </button>
-      <p>Events: <span id="events-heard"></span></p>
+      <!-- tailwindcss doesnt have a util class for this long text overflow stuff -->
+      <p
+        class="w-full"
+        style="overflow-wrap: break-word; word-break: break-all"
+      >
+        Events: <span id="events-heard"></span>
+      </p>
     </footer>
   </body>
 </html>
