@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed package.json exports to be browser only
 
+### Changed
+
+- Bound `wallet-standard:app-ready` listener so that repeated calls to `registerSolanaMwaWalletStandard()` wont register multiple listeners
+
 ## [0.1.1] - 2023-09-05
 
 ### Added
