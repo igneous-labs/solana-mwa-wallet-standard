@@ -9,7 +9,7 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./src/index.js"
+      "browser": "./src/index.js"
     }
   },
   "types": "types/index.d.ts",

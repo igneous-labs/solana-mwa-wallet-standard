@@ -15,7 +15,11 @@ export default defineConfig({
       input: Object.fromEntries(
         glob
           .sync(path.join(__dirname, "/**/*.html"))
-          .filter((htmlFilePath) => !htmlFilePath.includes("dist/"))
+          .filter(
+            (htmlFilePath) =>
+              !htmlFilePath.includes("dist/") &&
+              !htmlFilePath.includes("node_modules/")
+          )
           .map((htmlFilePath) => {
             const baseName = path.basename(htmlFilePath);
             return [
