@@ -3,7 +3,7 @@
   "description": "Register Solana Mobile Wallet Adapter as a wallet-standard wallet",
   "repository": "github:igneous-labs/solana-mwa-wallet-standard",
   "homepage": "https://github.com/igneous-labs/solana-mwa-wallet-standard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "Apache-2.0",
   "browser": "src/index.js",
   "exports": {
