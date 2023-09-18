@@ -508,6 +508,17 @@ function signMessagesToMwaFormat(msgs) {
   return res;
 }
 
+/** @type {null | ((event: import("@wallet-standard/base").WindowAppReadyEvent) => void)} */
+let boundAppReadyListener = null;
+
+/**
+ * @param {SolanaMwaWalletStandardCtorArgs} args
+ * @param {import("@wallet-standard/base").WindowAppReadyEvent} event
+ */
+function appReadyListener(args, { detail: { register } }) {
+  register(new SolanaMwaWalletStandard(args));
+}
+
 /**
  * register the solana mobile wallet adapter as a standard wallet
  * @param {SolanaMwaWalletStandardCtorArgs} args
@@ -515,8 +526,21 @@ function signMessagesToMwaFormat(msgs) {
 export function registerSolanaMwaWalletStandard(args) {
   /** @type {import("@wallet-standard/base").WalletEventsWindow} */
   const walletEventsWindow = window;
+
+  // If there's an existing listener, remove it first
+  if (boundAppReadyListener) {
+    walletEventsWindow.removeEventListener(
+      "wallet-standard:app-ready",
+      boundAppReadyListener
+    );
+  }
+
+  // Bind the listener with the provided arguments
+  boundAppReadyListener = appReadyListener.bind(null, args);
+
+  // Add the event listener
   walletEventsWindow.addEventListener(
     "wallet-standard:app-ready",
-    ({ detail: { register } }) => register(new SolanaMwaWalletStandard(args))
+    boundAppReadyListener
   );
 }
